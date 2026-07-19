@@ -1,0 +1,8 @@
+select t.user_id,round(avg(case when t.activity_type = 'free_trial' then t.activity_duration * 1.00 end),2) as trial_avg_duration, round(avg(case when t.activity_type = 'paid' then t.activity_duration * 1.00 end),2) as paid_avg_duration 
+from UserActivity t
+where exists (
+select 1
+from useractivity s
+where s.activity_type = 'paid' and t.user_id = s.user_id 
+) 
+group by t.user_id
