@@ -1,0 +1,33 @@
+with nesto as (
+    select *,
+        (case 
+            when datepart(month, sale_date) in (12, 1, 2) then 'Winter' 
+            when datepart(month, sale_date) in (3, 4, 5) then 'Spring' 
+            when datepart(month, sale_date) in (6, 7, 8) then 'Summer'
+            else 'Fall'
+         end) as season
+    from sales
+),
+rangirane_kategorije as (
+    select 
+        s.season,
+        p.category,
+        sum(s.quantity) as total_quantity,
+        sum(s.quantity * s.price) as total_revenue,
+
+        rank() over (
+            partition by s.season 
+            order by sum(s.quantity) desc, sum(s.quantity * s.price) desc, p.category asc
+        ) as rnk
+    from nesto s 
+    inner join products p on s.product_id = p.product_id
+    group by p.category, s.season
+)
+
+select 
+    season, 
+    category, 
+    total_quantity, 
+    total_revenue
+from rangirane_kategorije
+where rnk = 1
