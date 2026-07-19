@@ -1,0 +1,9 @@
+with nesto as (select accepter_id
+from requestaccepted
+union all
+select requester_id
+from requestaccepted)
+select top 1 accepter_id as id,count(*) as num
+from nesto
+group by accepter_id
+order by num desc
