@@ -1,0 +1,5 @@
+/* Write your T-SQL query statement below */
+select *
+from users
+where mail like '[a-zA-Z]%@leetcode.com' and mail not like '[a-zA-Z]%[^a-zA-Z0-9-_.]%@leetcode.com'
+and mail like '%leetcode.com' collate Latin1_General_CS_AS
