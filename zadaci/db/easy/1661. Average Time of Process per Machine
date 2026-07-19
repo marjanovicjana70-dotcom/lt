@@ -1,0 +1,8 @@
+/* Write your T-SQL query statement below */
+with nesto as (
+    select machine_id,process_Id,activity_type,max(timestamp) over(partition by machine_id,process_id) - min(timestamp) over(partition by machine_id,process_id) as razlika
+    from activity
+)
+select machine_id,round(avg(razlika),3) as processing_time
+from nesto
+group by machine_id
