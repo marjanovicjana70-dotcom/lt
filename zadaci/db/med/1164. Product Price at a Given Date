@@ -1,0 +1,14 @@
+
+with nesto as (
+select 
+product_id,
+new_price as price,
+row_number() over(partition by product_id order by change_date desc) as red
+from products
+where change_date <= '2019-08-16'
+)
+SELECT distinct
+p.product_id,
+(CASE when price is null then 10 else price end) as price
+FROM 
+products p left join nesto n on p.product_id = n.product_id and n.red = 1
