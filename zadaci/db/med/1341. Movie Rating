@@ -1,0 +1,22 @@
+with nesto1 as (
+    
+select top 1 u.name as results
+from users u
+left join movierating m on u.user_id = m.user_id
+group by m.user_id,u.name
+order by count(*) desc,u.name asc)
+
+,nesto2 as (
+select top 1 m.title as title
+from movies m
+left join movierating mr on m.movie_id = mr.movie_id
+where mr.created_at between '2020-02-01' and '2020-02-29'
+group by mr.movie_id,m.title
+order by round(avg(cast(mr.rating as decimal(3,2))),2) desc,m.title
+)
+
+select * 
+from nesto1
+union all
+select * 
+from nesto2
