@@ -1,0 +1,9 @@
+select distinct p.product_id,
+case when
+round(sum(u.units*p.price) over(partition by p.product_id)/sum(u.units) over(partition by p.product_id),2) is null then 0 
+else round(sum(u.units*p.price) over(partition by p.product_id)/sum(u.units) over(partition by p.product_id),2)
+end
+ as average_price
+from prices p
+left join unitssold u on p.product_id = u.product_id
+and u.purchase_date between p.start_date and p.end_date
