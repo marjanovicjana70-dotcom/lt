@@ -1,0 +1,13 @@
+WITH nesto as (
+SELECT
+*,
+LAG(num,1) over(order by id asc) as prethodni,
+LEAD(num,1) over(order by id asc) as sledeci
+FROM 
+logs
+)
+SELECT 
+DISTINCT num as ConsecutiveNums
+FROM
+nesto
+WHERE num = prethodni AND num = sledeci
