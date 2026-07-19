@@ -1,0 +1,18 @@
+/* Write your T-SQL query statement below */
+select t.id, (case
+when p_id is null then 'Root'
+
+when p_id is not null and t.id not in
+(
+select d.p_id
+from tree d
+inner join tree t on d.p_id = t.id
+where d.p_id is not null
+) 
+then 'Leaf'
+else 'Inner'
+
+
+end) 
+as type
+from tree t
