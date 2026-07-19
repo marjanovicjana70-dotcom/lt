@@ -1,0 +1,13 @@
+with nesto as (
+
+select distinct top 2 salary
+from employee
+order by salary desc
+)
+select (
+case
+when count(*) = 2 then min(salary)
+else null
+end
+) as SecondHighestSalary
+from nesto
