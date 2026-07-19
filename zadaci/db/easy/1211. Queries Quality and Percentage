@@ -1,0 +1,7 @@
+with nesto as (
+select query_name,rating/position as pozicija,count(case when rating < 3 then 1 end) over(partition by query_name) as manje
+from queries
+)
+select query_name,round(sum(pozicija)/count(*),2) as quality,round(manje /count(*)*100,2) as poor_query_percentage
+from nesto 
+group by query_name
