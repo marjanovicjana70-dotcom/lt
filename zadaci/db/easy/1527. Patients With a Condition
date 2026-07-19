@@ -1,0 +1,4 @@
+/* Write your T-SQL query statement below */
+select *
+from patients
+where charindex('DIAB1',conditions) = 1 or charindex(' DIAB1',conditions) > 0
