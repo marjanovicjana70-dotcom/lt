@@ -1,0 +1,8 @@
+with tabe as (
+select 
+id,
+temperature,
+recordDate,
+lag(recordDate, 1) over(order by recordDate) as prethodni_dan,
+lag(temperature, 1) over (order by recordDate) as prethodna
+from Weather
