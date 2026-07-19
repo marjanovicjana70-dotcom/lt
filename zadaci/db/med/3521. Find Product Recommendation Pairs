@@ -1,0 +1,17 @@
+
+with nesto as (
+SELECT f.product_id as product1_id,s.product_id as product2_id,count(*) as customer_count
+from ProductPurchases f
+inner join ProductPurchases s on f.user_id = s.user_id and f.product_id < s.product_id
+group by f.product_id,s.product_id)
+SELECT 
+product1_id,
+product2_id,
+prvi.category as product1_category,
+drugi.category as product2_category,
+customer_count
+FROM nesto n
+INNER join ProductInfo prvi on n.product1_id = prvi.product_id
+INNER JOIN ProductInfo drugi on n.product2_id = drugi.product_id
+WHERE customer_count >= 3
+ORDER BY customer_count DESC, product1_id ASC,product2_id ASC
