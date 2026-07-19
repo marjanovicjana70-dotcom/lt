@@ -1,0 +1,8 @@
+
+/* Write your T-SQL query statement below */
+with nesto as(select person_name,sum(weight) over(order by turn) as tezina
+from queue)
+select top 1 person_name
+from nesto
+where tezina <= 1000
+order by tezina desc
