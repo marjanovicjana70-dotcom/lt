@@ -1,0 +1,9 @@
+with nesto as (select id,student,(case when id % 2 = 0 then id-1 else id end) as redosled,count(*) over() as ukupno
+from seat)
+
+select f.id,(case when f.redosled = f.ukupno then f.student else (
+    select student
+    from nesto
+    where f.redosled = redosled and f.id != id
+) end) as student
+from nesto f
