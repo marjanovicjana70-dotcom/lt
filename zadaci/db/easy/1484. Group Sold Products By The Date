@@ -1,0 +1,8 @@
+with nesto as (
+select distinct product,sell_date
+from activities
+
+)
+select sell_date,count(*) as num_sold,group_concat(product order by product separator',') as products
+from nesto
+group by sell_date
