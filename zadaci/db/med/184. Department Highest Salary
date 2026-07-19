@@ -1,0 +1,4 @@
+WITH RANK AS (  
+    SELECT *,DENSE_RANK() OVER(PARTITION BY DEPARTMENTID ORDER BY SALARY DESC) AS RNK FROM EMPLOYEE
+)
+SELECT d.name as department,e.name as employee,salary from rank e inner join department d on e.departmentid= d.id where e.rnk = 1
