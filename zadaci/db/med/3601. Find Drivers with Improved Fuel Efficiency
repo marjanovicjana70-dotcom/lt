@@ -1,0 +1,25 @@
+with nesto as 
+(
+SELECT 
+driver_id,
+AVG(case when format(trip_date,'MM-dd') between '07-01' and '12-31' then distance_km*1.00/fuel_consumed*1.00 end) as second_half_avg,
+AVG(case when format(trip_date,'MM-dd') between '01-01' and '06-30' then distance_km*1.00/fuel_consumed*1.00 end) as first_half_avg
+FROM trips
+GROUP BY driver_id
+)
+SELECT 
+t.driver_id,
+d.driver_name,
+ROUND(t.first_half_avg,2) AS first_half_avg,
+ROUND(t.second_half_avg,2) AS second_half_avg, 
+ROUND(t.second_half_avg - t.first_half_avg,2) as efficiency_improvement
+FROM 
+nesto t
+INNER JOIN drivers d ON t.driver_id = d.driver_id
+WHERE 
+t.second_half_avg - t.first_half_avg  IS NOT NULL 
+AND
+t.second_half_avg - t.first_half_avg > 0
+ORDER BY 
+ROUND(t.second_half_avg - t.first_half_avg,2) DESC,
+d.driver_name ASC
