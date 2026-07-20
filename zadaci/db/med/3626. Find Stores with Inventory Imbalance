@@ -1,0 +1,26 @@
+WITH nesto AS (
+SELECT
+store_id,
+product_name,
+quantity,
+price,
+ROW_NUMBER() OVER(PARTITION BY store_id ORDER BY price DESC) as red,
+COUNT(*) OVER(PARTITION BY store_id) as broj,
+COUNT(product_name) over(partition by store_id) as ukupno
+FROM
+inventory
+)
+SELECT
+n.store_id as store_id,
+s.store_name as store_name,
+s.location as location,
+n.product_name as most_exp_product,
+n2.product_name as cheapest_product,
+ROUND(n2.quantity*1.00/n.quantity*1.00,2) as imbalance_ratio
+FROM
+nesto n
+INNER JOIN nesto n2 on n.store_id = n2.store_id
+INNER JOIN stores s on n.store_id = s.store_id
+WHERE n.red = 1 AND n2.red = n.ukupno AND n.ukupno >= 3 AND n.quantity < n2.quantity
+order by
+ROUND(n2.quantity*1.00/n.quantity*1.00,2) DESC, s.store_name asc
