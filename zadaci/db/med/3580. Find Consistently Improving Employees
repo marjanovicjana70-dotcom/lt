@@ -1,0 +1,23 @@
+WITH nesto as(
+SELECT 
+review_date,
+employee_id,
+rating,
+COUNT(*) OVER(PARTITION BY employee_id) as broj,
+ROW_NUMBER() OVER(PARTITION BY employee_id ORDER BY review_date DESC) as red,
+LEAD(rating) OVER(PARTITION BY employee_id ORDER BY review_date DESC) as drugi,
+LEAD(rating,2) OVER(PARTITION BY employee_id ORDER BY review_date DESC) as treci
+FROM 
+performance_reviews
+)
+SELECT
+n.employee_id,
+name,
+rating - treci as improvement_score
+FROM 
+nesto n
+INNER JOIN employees e on n.employee_id = e.employee_id
+WHERE
+red = 1 AND broj >= 3 AND rating > drugi AND drugi > treci
+ORDER BY
+rating - treci DESC, name ASC 
