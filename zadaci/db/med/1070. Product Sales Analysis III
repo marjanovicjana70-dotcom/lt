@@ -1,0 +1,19 @@
+with nesto as (
+SELECT
+product_id,
+year,
+quantity,
+price,
+DENSE_RANK() OVER(partition by product_id order by year asc) as red
+FROM
+Sales
+)
+SELECT
+product_id,
+year as first_year,
+quantity,
+price
+FROM
+nesto
+WHERE 
+red = 1
